@@ -1,0 +1,4 @@
+define foo takes x, y
+    x is 1
+    print x
+end
