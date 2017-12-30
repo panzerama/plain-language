@@ -12,6 +12,7 @@ class Tokenizer:
     terminals = [
         ('define', "\\bdefine\\b"),
         ('end', "\\bend\\b"),
+        ('newline', "\\n"),
         ('var_sep', ","),
         ('identifier', "\\b[a-zA-Z]+\\b"),
         ('number', "\\b[0-9]+\\b")
@@ -32,8 +33,9 @@ class Tokenizer:
                 if reg_match:
                     token_values = {"token":token, "value":reg_match.group()}
                     current_token = Token(**token_values)
+                    # print(current_token.token)
                     tokens.append(current_token)
-                    self.code = self.code[reg_match.end():].strip()
+                    self.code = self.code[reg_match.end():].strip(" ")
                     break
 
         return tokens
@@ -50,14 +52,21 @@ class Parser:
         # consume the body of the function
 
     def parse_def():
-        consume('define')
+        def_token = consume('define')
+        name = consume('identifier')
+        args = parse_arg_names()
+        #body
+
+    def parse_arg_names():
+        pass
 
     def consume(expected_token_type):
         next_token = self.tokens.pop(0)
         if next_token == expected_token_type:
             return next_token
         else:
-            raise RuntimeError
+            raise RuntimeError("Parser.consume did not get token of expected type. " + \
+                "Instead of {}, got {}".format(expected_token_type, next_token.token))
 
 
     # parse the tree by consuming tokens in the list
@@ -71,11 +80,11 @@ class Parser:
 
 
 def compiler():
-    program_file = open("test.plain", 'r')
+    program_file = open("tests/testDefineFunc.plain", 'r')
 
     tokens = Tokenizer(program_file).tokenize()
     tree = Parser(tokens).parse
-    tree.print_tree()
+    # tree.print_tree()
 
 if __name__ == '__main__':
     compiler()

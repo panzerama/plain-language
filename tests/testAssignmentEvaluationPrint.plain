@@ -1,0 +1,5 @@
+define foo takes x, y
+    x is 1
+    if x equals 1
+        print "success!"
+end
